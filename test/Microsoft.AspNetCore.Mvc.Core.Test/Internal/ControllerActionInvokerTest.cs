@@ -2596,6 +2596,49 @@ namespace Microsoft.AspNetCore.Mvc.Internal
             Assert.NotNull(listener.AfterAction?.ActionDescriptor);
             Assert.NotNull(listener.AfterAction?.HttpContext);
         }
+        
+        public async Task InvokeAction_ExceptionBubbling_AsyncActionFilter_To_ResourceFilter()
+        {
+            // Arrange
+            var resourceFilter = new Mock<IAsyncResourceFilter>(MockBehavior.Strict);
+            resourceFilter
+                .Setup(f => f.OnResourceExecutionAsync(It.IsAny<ResourceExecutingContext>(), It.IsAny<ResourceExecutionDelegate>()))
+                .Returns<ResourceExecutingContext, ResourceExecutionDelegate>(async (c, next) =>
+                {
+                    var context = await next();
+                    Assert.Same(_actionException, context.Exception);
+                    context.ExceptionHandled = true;
+                });
+
+            var actionFilter1 = new Mock<IAsyncActionFilter>(MockBehavior.Strict);
+            actionFilter1
+                .Setup(f => f.OnActionExecutionAsync(It.IsAny<ActionExecutingContext>(), It.IsAny<ActionExecutionDelegate>()))
+                .Returns<ActionExecutingContext, ActionExecutionDelegate>(async (c, next) =>
+                {
+                    await next();
+                });
+
+            var actionFilter2 = new Mock<IAsyncActionFilter>(MockBehavior.Strict);
+            actionFilter2
+                .Setup(f => f.OnActionExecutionAsync(It.IsAny<ActionExecutingContext>(), It.IsAny<ActionExecutionDelegate>()))
+                .Returns<ActionExecutingContext, ActionExecutionDelegate>(async (c, next) =>
+                {
+                    await next();
+                });
+
+            var invoker = CreateInvoker(
+                new IFilterMetadata[]
+                {
+                    resourceFilter.Object,
+                    actionFilter1.Object,
+                    actionFilter2.Object,
+                },
+                // The action won't run
+                actionThrows: true);
+
+            // Act & Assert
+            await invoker.InvokeAsync();
+        }
 
         private TestControllerActionInvoker CreateInvoker(
             IFilterMetadata filter,
