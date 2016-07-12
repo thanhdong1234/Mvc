@@ -16,6 +16,7 @@ using Microsoft.AspNetCore.Mvc.ModelBinding.Validation;
 using Microsoft.AspNetCore.Testing;
 using Newtonsoft.Json.Linq;
 using Xunit;
+using Microsoft.AspNetCore.Mvc.TestCommon;
 
 namespace Microsoft.AspNetCore.Mvc.IntegrationTests
 {
@@ -78,7 +79,7 @@ namespace Microsoft.AspNetCore.Mvc.IntegrationTests
                 };
             }
         }
-
+        
         [Theory]
         [MemberData(nameof(MultipleActionParametersAndValidationData))]
         public async Task ValidationIsTriggered_OnFromBodyModels(List<ParameterDescriptor> parameters)
@@ -113,9 +114,7 @@ namespace Microsoft.AspNetCore.Mvc.IntegrationTests
                 modelState,
                 e => string.Equals(e.Key, "AccountId", StringComparison.OrdinalIgnoreCase)).Value;
             var error = Assert.Single(entry.Errors);
-            Assert.Contains("AccountId", error.ErrorMessage);
-            Assert.Contains("25", error.ErrorMessage);
-            Assert.Contains("50", error.ErrorMessage);
+            Assert.Equal(ValidationAttributeUtil.GetRangeErrorMessage(25, 50, "AccountId"), error.ErrorMessage);
         }
 
         [Theory]
@@ -1497,8 +1496,7 @@ namespace Microsoft.AspNetCore.Mvc.IntegrationTests
 
         private static void AssertRequiredError(string key, ModelError error)
         {
-            // Mono issue - https://github.com/aspnet/External/issues/19
-            Assert.Contains(key, error.ErrorMessage);
+            Assert.Equal(ValidationAttributeUtil.GetRequiredErrorMessage(key), error.ErrorMessage);
             Assert.Null(error.Exception);
         }
     }

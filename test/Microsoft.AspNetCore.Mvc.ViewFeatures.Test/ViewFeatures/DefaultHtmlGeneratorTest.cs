@@ -103,15 +103,12 @@ namespace Microsoft.AspNetCore.Mvc.ViewFeatures
             var viewContext = GetViewContext<Model>(model: null, metadataProvider: metadataProvider);
             var modelExplorer = metadataProvider.GetModelExplorerForType(typeof(string), model: null);
 
-            var expected = new ArgumentException(
-                "The name of an HTML field cannot be null or empty. Instead use methods " +
-                    "Microsoft.AspNetCore.Mvc.Rendering.IHtmlHelper.Editor or Microsoft.AspNetCore.Mvc.Rendering." +
-                    "IHtmlHelper`1.EditorFor with a non-empty htmlFieldName argument value.",
-                "expression").Message;
+            var expected = "The name of an HTML field cannot be null or empty. Instead use methods " +
+                "Microsoft.AspNetCore.Mvc.Rendering.IHtmlHelper.Editor or Microsoft.AspNetCore.Mvc.Rendering." +
+                "IHtmlHelper`1.EditorFor with a non-empty htmlFieldName argument value.";
 
             // Act and assert
-            var ex = Assert.Throws<ArgumentException>(
-                "expression",
+            var ex = ExceptionAssert.ThrowsArgument(
                 () => htmlGenerator.GenerateSelect(
                     viewContext,
                     modelExplorer,
@@ -119,9 +116,9 @@ namespace Microsoft.AspNetCore.Mvc.ViewFeatures
                     null,
                     new List<SelectListItem>(),
                     true,
-                    null));
-
-            Assert.Equal(expected, ex.Message);
+                    null),
+                "expression",
+                expected);
         }
 
         [Fact]
@@ -133,24 +130,21 @@ namespace Microsoft.AspNetCore.Mvc.ViewFeatures
             var viewContext = GetViewContext<Model>(model: null, metadataProvider: metadataProvider);
             var modelExplorer = metadataProvider.GetModelExplorerForType(typeof(string), model: null);
 
-            var expected = new ArgumentException(
-                "The name of an HTML field cannot be null or empty. Instead use methods " +
+            var expected = "The name of an HTML field cannot be null or empty. Instead use methods " +
                     "Microsoft.AspNetCore.Mvc.Rendering.IHtmlHelper.Editor or Microsoft.AspNetCore.Mvc.Rendering." +
-                    "IHtmlHelper`1.EditorFor with a non-empty htmlFieldName argument value.",
-                "expression").Message;
+                    "IHtmlHelper`1.EditorFor with a non-empty htmlFieldName argument value.";
 
             // Act and assert
-            var ex = Assert.Throws<ArgumentException>(
-                "expression",
+            var ex = ExceptionAssert.ThrowsArgument(                
                 () => htmlGenerator.GenerateTextArea(
                     viewContext,
                     modelExplorer,
                     null,
                     1,
                     1,
-                    null));
-
-            Assert.Equal(expected, ex.Message);
+                    null),
+                "expression",
+                expected);
         }
 
         [Fact]
@@ -162,17 +156,15 @@ namespace Microsoft.AspNetCore.Mvc.ViewFeatures
             var viewContext = GetViewContext<Model>(model: null, metadataProvider: metadataProvider);
             var modelExplorer = metadataProvider.GetModelExplorerForType(typeof(string), model: null);
 
-            var expected = new ArgumentException("The name of an HTML field cannot be null or empty. Instead use methods " +
+            var expected = "The name of an HTML field cannot be null or empty. Instead use methods " +
                 "Microsoft.AspNetCore.Mvc.Rendering.IHtmlHelper.Editor or Microsoft.AspNetCore.Mvc.Rendering." +
-                "IHtmlHelper`1.EditorFor with a non-empty htmlFieldName argument value.",
-                "expression").Message;
+                "IHtmlHelper`1.EditorFor with a non-empty htmlFieldName argument value.";
 
             // Act and assert
-            var ex = Assert.Throws<ArgumentException>(
+            var ex = ExceptionAssert.ThrowsArgument(
+                () => htmlGenerator.GenerateValidationMessage(viewContext, null, null, "Message", "tag", null),
                 "expression",
-                () => htmlGenerator.GenerateValidationMessage(viewContext, null, null, "Message", "tag", null));
-
-            Assert.Equal(expected, ex.Message);
+                expected);
         }
 
         [Theory]

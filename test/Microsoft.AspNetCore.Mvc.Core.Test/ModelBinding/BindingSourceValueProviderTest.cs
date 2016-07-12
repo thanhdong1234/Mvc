@@ -1,10 +1,9 @@
 // Copyright (c) .NET Foundation. All rights reserved.
 // Licensed under the Apache License, Version 2.0. See License.txt in the project root for license information.
 
+using Microsoft.AspNetCore.Testing;
 using System;
-using System.Threading.Tasks;
 using Xunit;
-using Microsoft.AspNetCore.Mvc.Core;
 
 namespace Microsoft.AspNetCore.Mvc.ModelBinding
 {
@@ -14,7 +13,9 @@ namespace Microsoft.AspNetCore.Mvc.ModelBinding
         public void BindingSourceValueProvider_ThrowsOnNonGreedySource()
         {
             // Arrange
-            var expected = Resources.FormatBindingSource_CannotBeGreedy("Test Source", "BindingSourceValueProvider");
+            var expected =
+                "The provided binding source 'Test Source' is a greedy data source. " +
+                "'BindingSourceValueProvider' does not support greedy data sources.";
 
             var bindingSource = new BindingSource(
                 "Test",
@@ -23,25 +24,27 @@ namespace Microsoft.AspNetCore.Mvc.ModelBinding
                 isFromRequest: true);
 
             // Act & Assert
-            var exception = Assert.Throws<ArgumentException>(
-                () => new TestableBindingSourceValueProvider(bindingSource));
-            Assert.StartsWith(expected, exception.Message);
+            var exception = ExceptionAssert.ThrowsArgument(
+                () => new TestableBindingSourceValueProvider(bindingSource),
+                "bindingSource",
+                expected);
         }
 
         [Fact]
         public void BindingSourceValueProvider_ThrowsOnCompositeSource()
         {
             // Arrange
-            var expected = Resources.FormatBindingSource_CannotBeComposite("Test Source", "BindingSourceValueProvider");
+            var expected = "The provided binding source 'Test Source' is a composite. 'BindingSourceValueProvider' requires that the source must represent a single type of input.";
 
             var bindingSource = CompositeBindingSource.Create(
                 bindingSources: new BindingSource[] { BindingSource.Query, BindingSource.Form },
                 displayName: "Test Source");
 
             // Act & Assert
-            var exception = Assert.Throws<ArgumentException>(
-                () => new TestableBindingSourceValueProvider(bindingSource));
-            Assert.StartsWith(expected, exception.Message);
+            var exception = ExceptionAssert.ThrowsArgument(
+                () => new TestableBindingSourceValueProvider(bindingSource),
+                "bindingSource",
+                expected);
         }
 
         [Fact]

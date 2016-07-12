@@ -14,6 +14,7 @@ using Microsoft.AspNetCore.Mvc.TestCommon;
 using Microsoft.AspNetCore.Mvc.ViewEngines;
 using Moq;
 using Xunit;
+using Microsoft.AspNetCore.Testing;
 
 namespace Microsoft.AspNetCore.Mvc.ViewFeatures.Internal
 {
@@ -369,8 +370,10 @@ namespace Microsoft.AspNetCore.Mvc.ViewFeatures.Internal
             helper.ViewData["Property1"] = "ViewData string";
 
             // Act and Assert
-            var ex = Assert.Throws<ArgumentException>(() => helper.DisplayFor(m => m.Property1));
-            Assert.Equal(expectedMessage, ex.Message);
+            var ex = ExceptionAssert.ThrowsArgument(
+                () => helper.DisplayFor(m => m.Property1),
+                null,
+                expectedMessage);
         }
 
         [Fact]

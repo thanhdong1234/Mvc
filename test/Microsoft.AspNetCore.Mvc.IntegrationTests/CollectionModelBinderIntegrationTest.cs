@@ -637,7 +637,7 @@ namespace Microsoft.AspNetCore.Mvc.IntegrationTests
             [StringLength(3)]
             public string Street { get; set; }
         }
-
+        
         [Fact]
         public async Task CollectionModelBinder_UsesCustomIndexes_AddsErrorsWithCorrectKeys()
         {
@@ -676,10 +676,9 @@ namespace Microsoft.AspNetCore.Mvc.IntegrationTests
             Assert.Equal("Addresses[Key1].Street", kvp.Key);
             var entry = kvp.Value;
             var error = Assert.Single(entry.Errors);
-            Assert.Contains("Street", error.ErrorMessage);
-            Assert.Contains("3", error.ErrorMessage);
+            Assert.Equal(ValidationAttributeUtil.GetStringLengthErrorMessage(null, 3, "Street"), error.ErrorMessage);
         }
-
+        
         [Theory]
         [InlineData("?[0].Street=LongStreet")]
         [InlineData("?index=low&[low].Street=LongStreet")]
@@ -716,8 +715,7 @@ namespace Microsoft.AspNetCore.Mvc.IntegrationTests
 
             var entry = Assert.Single(modelState).Value;
             var error = Assert.Single(entry.Errors);
-            Assert.Contains("Street", error.ErrorMessage);
-            Assert.Contains("3", error.ErrorMessage);
+            Assert.Equal(ValidationAttributeUtil.GetStringLengthErrorMessage(null, 3, "Street"), error.ErrorMessage);
         }
 
         // parameter type, form content, expected type

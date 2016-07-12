@@ -169,10 +169,10 @@ namespace Microsoft.AspNetCore.Mvc.Rendering
         public void PasswordGeneratesUnobtrusiveValidation()
         {
             // Arrange
-            // Mono issue - https://github.com/aspnet/External/issues/19
-            var expected = PlatformNormalizer.NormalizeContent(
-                $@"<input data-val=""HtmlEncode[[true]]"" data-val-required=""HtmlEncode[[{GetRequiredMessage("Property2")}]]"" " +
-                @"id=""HtmlEncode[[Property2]]"" name=""HtmlEncode[[Property2]]"" type=""HtmlEncode[[password]]"" />");
+            var requiredMessage = ValidationAttributeUtil.GetRequiredErrorMessage("Property2");
+            var expected = 
+                $@"<input data-val=""HtmlEncode[[true]]"" data-val-required=""HtmlEncode[[{requiredMessage}]]"" " +
+                @"id=""HtmlEncode[[Property2]]"" name=""HtmlEncode[[Property2]]"" type=""HtmlEncode[[password]]"" />";
             var helper = DefaultTemplatesUtilities.GetHtmlHelper(GetViewDataWithModelStateAndModelAndViewDataValues());
 
             // Act
@@ -278,10 +278,10 @@ namespace Microsoft.AspNetCore.Mvc.Rendering
         public void PasswordFor_GeneratesUnobtrusiveValidationAttributes()
         {
             // Arrange
-            // Mono issue - https://github.com/aspnet/External/issues/19
-            var expected = PlatformNormalizer.NormalizeContent(
-                $@"<input data-val=""HtmlEncode[[true]]"" data-val-required=""HtmlEncode[[{GetRequiredMessage("Property2")}]]"" " +
-                @"id=""HtmlEncode[[Property2]]"" name=""HtmlEncode[[Property2]]"" type=""HtmlEncode[[password]]"" />");
+            var requiredMessage = ValidationAttributeUtil.GetRequiredErrorMessage("Property2");
+            var expected =
+                $@"<input data-val=""HtmlEncode[[true]]"" data-val-required=""HtmlEncode[[{requiredMessage}]]"" " +
+                @"id=""HtmlEncode[[Property2]]"" name=""HtmlEncode[[Property2]]"" type=""HtmlEncode[[password]]"" />";
             var helper = DefaultTemplatesUtilities.GetHtmlHelper(GetViewDataWithErrors());
 
             // Act
@@ -412,11 +412,6 @@ namespace Microsoft.AspNetCore.Mvc.Rendering
 
             // Assert
             Assert.Equal(expected, HtmlContentUtilities.HtmlContentToString(result));
-        }
-
-        private static string GetRequiredMessage(string parameterName)
-        {
-            return new RequiredAttribute().FormatErrorMessage(parameterName);
         }
 
         private static ViewDataDictionary<PasswordModel> GetViewDataWithNullModelAndNonEmptyViewData()

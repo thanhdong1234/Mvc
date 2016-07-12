@@ -22,6 +22,7 @@ using Microsoft.Extensions.ObjectPool;
 using Microsoft.Extensions.WebEncoders.Testing;
 using Moq;
 using Xunit;
+using Microsoft.AspNetCore.Testing;
 
 namespace Microsoft.AspNetCore.Mvc.Internal
 {
@@ -34,16 +35,26 @@ namespace Microsoft.AspNetCore.Mvc.Internal
             var value = "a/dkfk";
             var action = CreateAction("InvalidTemplate", "{" + value + "}");
 
+            var expectedMessage =
+                "The following errors occurred with attribute routing information:" + Environment.NewLine +
+                Environment.NewLine +
+                "For action: 'InvalidTemplate'" + Environment.NewLine +
+                "Error: The route parameter name 'a/dkfk' is invalid. Route parameter names must be non-empty and " +
+                "cannot contain these characters: '{', '}', '/'. The '?' character marks a parameter as optional, " +
+                "and can occur only at the end of the parameter. The '*' character marks a parameter as catch-all, " +
+                "and can occur only at the start of the parameter.";
+
             var services = CreateServices(action);
 
             var route = AttributeRouting.CreateAttributeMegaRoute(services);
 
             // Act & Assert
             var ex = await Assert.ThrowsAsync<InvalidOperationException>(async () =>
-            {
-                await route.RouteAsync(new RouteContext(new DefaultHttpContext()));
-            });
-            Assert.Contains(value, ex.Message);
+                {
+                    await route.RouteAsync(new RouteContext(new DefaultHttpContext()));
+                });
+
+            Assert.Contains(expectedMessage, ex.Message);
         }
 
         [Fact]

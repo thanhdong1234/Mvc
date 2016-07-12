@@ -12,6 +12,7 @@ using Microsoft.AspNetCore.Mvc.Abstractions;
 using Microsoft.AspNetCore.Mvc.ModelBinding;
 using Microsoft.AspNetCore.Testing;
 using Xunit;
+using Microsoft.AspNetCore.Mvc.TestCommon;
 
 namespace Microsoft.AspNetCore.Mvc.IntegrationTests
 {
@@ -93,7 +94,7 @@ namespace Microsoft.AspNetCore.Mvc.IntegrationTests
             var products = Assert.IsAssignableFrom<IEnumerable<ProductViewModel>>(result.Model);
             Assert.Equal(2, products.Count());
         }
-
+        
         [Fact]
         public async Task ModelMetadataTypeAttribute_InvalidPropertiesAndSubPropertiesOnBaseClass_HasModelStateErrors()
         {
@@ -128,18 +129,21 @@ namespace Microsoft.AspNetCore.Mvc.IntegrationTests
             Assert.NotNull(boundPerson);
             Assert.False(modelState.IsValid);
             var modelStateErrors = CreateValidationDictionary(modelState);
-            Assert.Contains("CompanyName", modelStateErrors["CompanyName"]);
 
-            Assert.Contains("Price", modelStateErrors["Price"]);
-            Assert.Contains("20", modelStateErrors["Price"]);
-            Assert.Contains("100", modelStateErrors["Price"]);
-            // Mono issue - https://github.com/aspnet/External/issues/19
-            Assert.Contains("Category", modelStateErrors["Category"]);
-            Assert.Contains("Contact Us", modelStateErrors["Contact"]);
-            Assert.Contains("Detail2", modelStateErrors["ProductDetails.Detail2"]);
-            Assert.Contains("Detail3", modelStateErrors["ProductDetails.Detail3"]);
+            var priceRange = ValidationAttributeUtil.GetRangeErrorMessage(20, 100, "Price");
+            var categoryRequired = ValidationAttributeUtil.GetRequiredErrorMessage("Category");
+            var contactUsRequired = ValidationAttributeUtil.GetRequiredErrorMessage("Contact Us");
+            var detail2Required = ValidationAttributeUtil.GetRequiredErrorMessage("Detail2");
+            var detail3Required = ValidationAttributeUtil.GetRequiredErrorMessage("Detail3");
+
+            Assert.Equal("CompanyName cannot be null or empty.", modelStateErrors["CompanyName"]);
+            Assert.Equal(priceRange, modelStateErrors["Price"]);
+            Assert.Equal(categoryRequired, modelStateErrors["Category"]);
+            Assert.Equal(contactUsRequired, modelStateErrors["Contact"]);
+            Assert.Equal(detail2Required, modelStateErrors["ProductDetails.Detail2"]);
+            Assert.Equal(detail3Required, modelStateErrors["ProductDetails.Detail3"]);
         }
-
+        
         [Fact]
         public async Task ModelMetadataTypeAttribute_InvalidComplexTypePropertyOnBaseClass_HasModelStateErrors()
         {
@@ -175,7 +179,8 @@ namespace Microsoft.AspNetCore.Mvc.IntegrationTests
             Assert.NotNull(boundPerson);
             Assert.False(modelState.IsValid);
             var modelStateErrors = CreateValidationDictionary(modelState);
-            Assert.Contains("ProductDetails", modelStateErrors["ProductDetails"]);
+            var productDetailsRequired = ValidationAttributeUtil.GetRequiredErrorMessage("ProductDetails");
+            Assert.Equal(productDetailsRequired, modelStateErrors["ProductDetails"]);
         }
 
         [Fact]
@@ -254,7 +259,7 @@ namespace Microsoft.AspNetCore.Mvc.IntegrationTests
             Assert.NotNull(boundPerson);
             Assert.True(modelState.IsValid);
         }
-
+        
         [Fact]
         public async Task ModelMetadataTypeAttribute_InvalidPropertiesOnDerivedClass_HasModelStateErrors()
         {
@@ -291,12 +296,11 @@ namespace Microsoft.AspNetCore.Mvc.IntegrationTests
             Assert.False(modelState.IsValid);
             var modelStateErrors = CreateValidationDictionary(modelState);
             Assert.Equal(2, modelStateErrors.Count);
-            Assert.Contains("Price", modelStateErrors["Price"]);
-            Assert.Contains("100", modelStateErrors["Price"]);
-            Assert.Contains("200", modelStateErrors["Price"]);
 
-            Assert.Contains("Contact", modelStateErrors["Contact"]);
-            Assert.Contains("10", modelStateErrors["Contact"]);
+            var priceRange = ValidationAttributeUtil.GetRangeErrorMessage(100, 200, "Price");
+            var contactLength = ValidationAttributeUtil.GetStringLengthErrorMessage(null, 10, "Contact");
+            Assert.Equal(priceRange, modelStateErrors["Price"]);
+            Assert.Equal(contactLength, modelStateErrors["Contact"]);
         }
 
         [Fact]
@@ -350,7 +354,7 @@ namespace Microsoft.AspNetCore.Mvc.IntegrationTests
         {
             public string Street { get; set; }
         }
-
+        
         [Fact]
         public async Task FromBodyAndRequiredOnProperty_EmptyBody_AddsModelStateError()
         {
@@ -386,8 +390,8 @@ namespace Microsoft.AspNetCore.Mvc.IntegrationTests
             Assert.Equal("CustomParameter.Address", key);
             Assert.False(modelState.IsValid);
             var error = Assert.Single(modelState[key].Errors);
-            // Mono issue - https://github.com/aspnet/External/issues/19
-            Assert.Contains("Address", error.ErrorMessage);
+            var addressRequired = ValidationAttributeUtil.GetRequiredErrorMessage("Address");
+            Assert.Equal(addressRequired, error.ErrorMessage);
         }
 
         [Fact]
@@ -633,7 +637,8 @@ namespace Microsoft.AspNetCore.Mvc.IntegrationTests
             var street = entry.Value;
             Assert.Equal(ModelValidationState.Invalid, street.ValidationState);
             var error = Assert.Single(street.Errors);
-            Assert.Contains("Street", error.ErrorMessage);
+            var streetRequired = ValidationAttributeUtil.GetRequiredErrorMessage("Street");
+            Assert.Equal(streetRequired, error.ErrorMessage);
         }
 
         private class Person3

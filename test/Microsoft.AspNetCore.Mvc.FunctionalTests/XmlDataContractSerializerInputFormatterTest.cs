@@ -13,6 +13,8 @@ using System.Threading.Tasks;
 using Microsoft.AspNetCore.Testing.xunit;
 using XmlFormattersWebSite;
 using Xunit;
+using Microsoft.AspNetCore.Mvc.TestCommon;
+using Microsoft.AspNetCore.Mvc.ModelBinding;
 
 namespace Microsoft.AspNetCore.Mvc.FunctionalTests
 {
@@ -100,7 +102,8 @@ namespace Microsoft.AspNetCore.Mvc.FunctionalTests
             request.Headers.Accept.Add(new MediaTypeWithQualityHeaderValue("application/xml-dcs"));
 
             var expectedErrorMessages = new List<string>();
-            expectedErrorMessages.Add("Address:The Address field is required.");
+
+            expectedErrorMessages.Add($"Address:The Address field is required.");
 
             // Act
             var response = await Client.SendAsync(request);

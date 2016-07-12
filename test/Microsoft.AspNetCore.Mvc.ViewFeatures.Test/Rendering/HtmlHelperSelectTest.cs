@@ -373,17 +373,16 @@ namespace Microsoft.AspNetCore.Mvc.Rendering
             string ignoredHtml)
         {
             // Arrange
-            var expected = new ArgumentException("The name of an HTML field cannot be null or empty. Instead use methods " +
+            var expected = "The name of an HTML field cannot be null or empty. Instead use methods " +
                 "Microsoft.AspNetCore.Mvc.Rendering.IHtmlHelper.Editor or Microsoft.AspNetCore.Mvc.Rendering." +
-                "IHtmlHelper`1.EditorFor with a non-empty htmlFieldName argument value.",
-                "expression").Message;
+                "IHtmlHelper`1.EditorFor with a non-empty htmlFieldName argument value.";
             var helper = DefaultTemplatesUtilities.GetHtmlHelper();
 
             // Act & Assert
-            var ex = Assert.Throws<ArgumentException>(
+            var ex = ExceptionAssert.ThrowsArgument(                
+                () => helper.DropDownList(null, selectList: null, optionLabel: null, htmlAttributes: null),
                 "expression",
-                () => helper.DropDownList(null, selectList: null, optionLabel: null, htmlAttributes: null));
-            Assert.Equal(expected, ex.Message);
+                expected);
         }
 
         [Theory]

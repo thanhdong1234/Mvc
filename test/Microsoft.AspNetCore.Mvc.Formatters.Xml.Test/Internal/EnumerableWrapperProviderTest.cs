@@ -80,12 +80,15 @@ namespace Microsoft.AspNetCore.Mvc.Formatters.Xml.Internal
         [InlineData(typeof(PersonList))]
         public void ThrowsArugmentExceptionFor_ConcreteEnumerableOfT(Type declaredType)
         {
-            // Act and Assert
-            var ex = Assert.Throws<ArgumentException>(() => new EnumerableWrapperProvider(
-                                                                            declaredType,
-                                                                            elementWrapperProvider: null));
+            // Arrange
+            var expectedMessage = "The type must be an interface and must be or derive from 'IEnumerable`1'.";
 
-            Assert.Equal("sourceEnumerableOfT", ex.ParamName);
+            // Act and Assert
+            var ex = ExceptionAssert.ThrowsArgument(() => new EnumerableWrapperProvider(
+                declaredType,
+                elementWrapperProvider: null),
+                "sourceEnumerableOfT",
+                expectedMessage);
         }
     }
 }

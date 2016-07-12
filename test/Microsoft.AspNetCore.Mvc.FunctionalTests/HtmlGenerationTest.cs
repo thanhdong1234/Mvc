@@ -1,6 +1,8 @@
 // Copyright (c) .NET Foundation. All rights reserved.
 // Licensed under the Apache License, Version 2.0. See License.txt in the project root for license information.
 
+using Microsoft.AspNetCore.Mvc.ModelBinding;
+using Microsoft.AspNetCore.Mvc.TestCommon;
 using System;
 using System.Collections.Generic;
 using System.Net;
@@ -506,7 +508,7 @@ Products: Music Systems, Televisions (3)";
                 "<label class=\"control-label col-md-2\" for=\"Name\">ItemName</label>" + Environment.NewLine +
                 "<input id=\"Name\" name=\"Name\" type=\"text\" value=\"\" />" + Environment.NewLine + Environment.NewLine +
                 "<label class=\"control-label col-md-2\" for=\"Id\">ItemNo</label>" + Environment.NewLine +
-                "<input data-val=\"true\" data-val-required=\"The ItemNo field is required.\" id=\"Id\" name=\"Id\" type=\"text\" value=\"\" />" +
+                $"<input data-val=\"true\" data-val-required=\"The ItemNo field is required.\" id=\"Id\" name=\"Id\" type=\"text\" value=\"\" />" +
                 Environment.NewLine + Environment.NewLine);
 
             // Act

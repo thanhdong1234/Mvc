@@ -18,6 +18,7 @@ using Microsoft.AspNetCore.Mvc.ModelBinding.Internal;
 using Microsoft.AspNetCore.Mvc.ModelBinding.Validation;
 using Moq;
 using Xunit;
+using Microsoft.AspNetCore.Testing;
 
 namespace Microsoft.AspNetCore.Mvc.ModelBinding
 {
@@ -50,6 +51,7 @@ namespace Microsoft.AspNetCore.Mvc.ModelBinding
         public async Task TryUpdateModel_ReturnsFalse_IfModelValidationFails()
         {
             // Arrange
+            var expectedMessage = new RequiredAttribute().FormatErrorMessage("MyProperty");
             var binderProviders = new IModelBinderProvider[]
             {
                 new SimpleTypeModelBinderProvider(),
@@ -85,7 +87,7 @@ namespace Microsoft.AspNetCore.Mvc.ModelBinding
             // Assert
             Assert.False(result);
             var error = Assert.Single(modelState["MyProperty"].Errors);
-            Assert.Contains("MyProperty", error.ErrorMessage);
+            Assert.Equal(expectedMessage, error.ErrorMessage);
         }
 
         [Fact]
@@ -612,8 +614,12 @@ namespace Microsoft.AspNetCore.Mvc.ModelBinding
             var model = new MyModel();
             Func<ModelMetadata, bool> propertyFilter = (m) => true;
 
+            var modelName = model.GetType().FullName;
+            var userName = typeof(User).FullName;
+            var expectedMessage = $"The model's runtime type '{modelName}' is not assignable to the type '{userName}'.";
+
             // Act & Assert
-            var exception = await Assert.ThrowsAsync<ArgumentException>(
+            var exception = await ExceptionAssert.ThrowsArgumentAsync(
                 () => ModelBindingHelper.TryUpdateModelAsync(
                     model,
                     typeof(User),
@@ -623,9 +629,9 @@ namespace Microsoft.AspNetCore.Mvc.ModelBinding
                     GetModelBinderFactory(binder.Object),
                     Mock.Of<IValueProvider>(),
                     new Mock<IObjectModelValidator>(MockBehavior.Strict).Object,
-                    propertyFilter));
-            var expectedMessage = Resources.FormatModelType_WrongType(model.GetType().FullName, typeof(User).FullName);
-            Assert.StartsWith(expectedMessage, exception.Message);
+                    propertyFilter),
+                "modelType",
+                expectedMessage);
         }
 
         [Theory]

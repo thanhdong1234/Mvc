@@ -11,6 +11,7 @@ using Microsoft.Extensions.Localization;
 using Microsoft.Extensions.WebEncoders.Testing;
 using Moq;
 using Xunit;
+using Microsoft.AspNetCore.Mvc.ModelBinding;
 
 namespace Microsoft.AspNetCore.Mvc.Localization.Test
 {
@@ -145,8 +146,9 @@ namespace Microsoft.AspNetCore.Mvc.Localization.Test
                 return data;
             }
         }
-
+        
         [Theory]
+        [ReplaceCulture("en-US", "en-US")]
         [MemberData(nameof(InvalidResourceStringData))]
         public void HtmlLocalizer_HtmlWithInvalidResourceString_ContentThrowsException(string format)
         {
@@ -165,6 +167,7 @@ namespace Microsoft.AspNetCore.Mvc.Localization.Test
 
             // Assert
             Assert.NotNull(exception);
+            Assert.Equal("Input string was not in a correct format.", exception.Message);
         }
 
         [Fact]

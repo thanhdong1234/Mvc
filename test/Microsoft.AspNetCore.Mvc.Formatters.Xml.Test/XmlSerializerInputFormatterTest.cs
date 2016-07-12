@@ -299,11 +299,13 @@ namespace Microsoft.AspNetCore.Mvc.Formatters.Xml
             Assert.True(context.HttpContext.Request.Body.CanRead);
         }
 
+        [ReplaceCulture("en-US", "en-US")]
         [Fact]
         public async Task ReadAsync_FallsbackToUTF8_WhenCharSet_NotInContentType()
         {
             // Arrange
             var expectedException = typeof(XmlException);
+            var expectedMessage = "The expected encoding 'utf-8' does not match the actual encoding 'utf-16LE'.";
 
             var inpStart = Encoding.Unicode.GetBytes("<?xml version=\"1.0\" encoding=\"UTF-16\"?>" +
                 "<DummyClass><SampleInt>");
@@ -320,15 +322,16 @@ namespace Microsoft.AspNetCore.Mvc.Formatters.Xml
 
             // Act and Assert
             var ex = await Assert.ThrowsAsync(expectedException, () => formatter.ReadAsync(context));
-            Assert.Contains("utf-8", ex.Message);
-            Assert.Contains("utf-16LE", ex.Message);
+            Assert.Equal(expectedMessage, ex.Message);
         }
 
         [Fact]
+        [ReplaceCulture("en-US", "en-US")]
         public async Task ReadAsync_UsesContentTypeCharSet_ToReadStream()
         {
             // Arrange
             var expectedException = typeof(XmlException);
+            var expectedMessage = "The expected encoding 'utf-16LE' does not match the actual encoding 'utf-8'.";
 
             var inputBytes = Encoding.UTF8.GetBytes("<?xml version=\"1.0\" encoding=\"UTF-8\"?>" +
                 "<DummyClass><SampleInt>1000</SampleInt></DummyClass>");
@@ -349,8 +352,7 @@ namespace Microsoft.AspNetCore.Mvc.Formatters.Xml
 
             // Act and Assert
             var ex = await Assert.ThrowsAsync(expectedException, () => formatter.ReadAsync(context));
-            Assert.Contains("utf-16LE", ex.Message);
-            Assert.Contains("utf-8", ex.Message);
+            Assert.Equal(expectedMessage, ex.Message);
         }
 
         [Fact]

@@ -27,7 +27,7 @@ namespace Microsoft.AspNetCore.Mvc.IntegrationTests
             [Required]
             public string Street { get; set; }
         }
-
+        
         [Fact]
         public async Task BindPropertyFromHeader_NoData_UsesFullPathAsKeyForModelStateErrors()
         {
@@ -64,7 +64,7 @@ namespace Microsoft.AspNetCore.Mvc.IntegrationTests
             var key = Assert.Single(modelState.Keys);
             Assert.Equal("CustomParameter.Address.Header", key);
             var error = Assert.Single(modelState[key].Errors);
-            Assert.Contains("Street", error.ErrorMessage);
+            Assert.Equal(ValidationAttributeUtil.GetRequiredErrorMessage("Street"), error.ErrorMessage);
         }
 
         [Fact]
