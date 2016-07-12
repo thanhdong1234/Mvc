@@ -9,7 +9,6 @@ using System.Threading.Tasks;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc.Abstractions;
 using Microsoft.AspNetCore.Mvc.ModelBinding;
-using Microsoft.AspNetCore.Testing;
 using Xunit;
 
 namespace Microsoft.AspNetCore.Mvc.IntegrationTests
@@ -27,7 +26,7 @@ namespace Microsoft.AspNetCore.Mvc.IntegrationTests
             [Required]
             public string Street { get; set; }
         }
-        
+
         [Fact]
         public async Task BindPropertyFromHeader_NoData_UsesFullPathAsKeyForModelStateErrors()
         {

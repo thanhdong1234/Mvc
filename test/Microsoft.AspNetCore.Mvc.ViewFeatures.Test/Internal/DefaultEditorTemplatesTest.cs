@@ -15,7 +15,6 @@ using Microsoft.AspNetCore.Mvc.ModelBinding;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.AspNetCore.Mvc.TestCommon;
 using Microsoft.AspNetCore.Mvc.ViewEngines;
-using Microsoft.AspNetCore.Testing;
 using Moq;
 using Xunit;
 
@@ -895,7 +894,7 @@ Environment.NewLine;
             html.Editor(expression: string.Empty, templateName: null, htmlFieldName: null, additionalViewData: null);
             viewEngine.Verify();
         }
-        
+
         private class OrderedModel
         {
             [Display(Order = 10001)]

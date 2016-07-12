@@ -1,8 +1,8 @@
 // Copyright (c) .NET Foundation. All rights reserved.
 // Licensed under the Apache License, Version 2.0. See License.txt in the project root for license information.
 
-using Xunit;
 using Microsoft.AspNetCore.Testing;
+using Xunit;
 
 namespace Microsoft.AspNetCore.Mvc.ModelBinding
 {
@@ -22,7 +22,7 @@ namespace Microsoft.AspNetCore.Mvc.ModelBinding
             var composite2 = CompositeBindingSource.Create(
               bindingSources: new BindingSource[] { BindingSource.Query, BindingSource.Form },
               displayName: "Test Source2");
-            
+
             // Act & Assert
             var exception = ExceptionAssert.ThrowsArgument(
                 () => composite1.CanAcceptDataFrom(composite2),

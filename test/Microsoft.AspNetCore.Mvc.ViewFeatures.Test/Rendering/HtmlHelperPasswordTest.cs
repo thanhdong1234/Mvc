@@ -134,13 +134,12 @@ namespace Microsoft.AspNetCore.Mvc.Rendering
             var expectedMessage = "The name of an HTML field cannot be null or empty. Instead use methods " +
                 "Microsoft.AspNetCore.Mvc.Rendering.IHtmlHelper.Editor or Microsoft.AspNetCore.Mvc.Rendering." +
                 "IHtmlHelper`1.EditorFor with a non-empty htmlFieldName argument value.";
-            var expected = new ArgumentException(expectedMessage, "expression").Message;
 
             // Act and Assert
             ExceptionAssert.ThrowsArgument(
                 () => helper.Password(name, value, htmlAttributes: null),
                 "expression",
-                expected);
+                expectedMessage);
         }
 
         [Fact]
@@ -170,7 +169,7 @@ namespace Microsoft.AspNetCore.Mvc.Rendering
         {
             // Arrange
             var requiredMessage = ValidationAttributeUtil.GetRequiredErrorMessage("Property2");
-            var expected = 
+            var expected =
                 $@"<input data-val=""HtmlEncode[[true]]"" data-val-required=""HtmlEncode[[{requiredMessage}]]"" " +
                 @"id=""HtmlEncode[[Property2]]"" name=""HtmlEncode[[Property2]]"" type=""HtmlEncode[[password]]"" />";
             var helper = DefaultTemplatesUtilities.GetHtmlHelper(GetViewDataWithModelStateAndModelAndViewDataValues());

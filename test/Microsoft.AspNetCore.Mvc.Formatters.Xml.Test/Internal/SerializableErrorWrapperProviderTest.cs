@@ -1,7 +1,6 @@
 // Copyright (c) .NET Foundation. All rights reserved.
 // Licensed under the Apache License, Version 2.0. See License.txt in the project root for license information.
 
-using System;
 using Microsoft.AspNetCore.Testing;
 using Xunit;
 
@@ -46,9 +45,7 @@ namespace Microsoft.AspNetCore.Mvc.Formatters.Xml.Internal
             var person = new Person() { Id = 10, Name = "John" };
 
             var expectedMessage = "The object to be wrapped must be of type " +
-                $"'{typeof(SerializableErrorWrapper).Name}' but was of type 'Person'.";
-
-            var serializableName = typeof(SerializableErrorWrapper).Name;
+                $"'{nameof(SerializableErrorWrapper)}' but was of type 'Person'.";
 
             // Act and Assert
             var exception = ExceptionAssert.ThrowsArgument(

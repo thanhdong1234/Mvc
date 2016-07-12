@@ -1,9 +1,7 @@
 // Copyright (c) .NET Foundation. All rights reserved.
 // Licensed under the Apache License, Version 2.0. See License.txt in the project root for license information.
 
-using System;
 using Xunit;
-using Microsoft.AspNetCore.Mvc.Core;
 using Microsoft.AspNetCore.Testing;
 
 namespace Microsoft.AspNetCore.Mvc.Filters
@@ -47,7 +45,7 @@ namespace Microsoft.AspNetCore.Mvc.Filters
             var expectedMessage = $"The type '{typeof(NonFilter).FullName}' must derive from " + $"'{typeof(IFilterMetadata).FullName}'.";
 
             // Act & Assert
-            var ex = ExceptionAssert.ThrowsArgument(
+            ExceptionAssert.ThrowsArgument(
                 () => { collection.Add(typeof(NonFilter)); },
                 "filterType",
                 expectedMessage);
@@ -90,7 +88,7 @@ namespace Microsoft.AspNetCore.Mvc.Filters
             var expectedMessage = $"The type '{typeof(NonFilter).FullName}' must derive from '{typeof(IFilterMetadata).FullName}'.";
 
             // Act & Assert
-            var ex = ExceptionAssert.ThrowsArgument(
+            ExceptionAssert.ThrowsArgument(
                 () => { collection.AddService(typeof(NonFilter)); },
                 "filterType",
                 expectedMessage);

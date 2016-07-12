@@ -12,9 +12,9 @@ using Microsoft.AspNetCore.Mvc.ModelBinding;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.AspNetCore.Mvc.TestCommon;
 using Microsoft.AspNetCore.Mvc.ViewEngines;
+using Microsoft.AspNetCore.Testing;
 using Moq;
 using Xunit;
-using Microsoft.AspNetCore.Testing;
 
 namespace Microsoft.AspNetCore.Mvc.ViewFeatures.Internal
 {
@@ -123,9 +123,9 @@ namespace Microsoft.AspNetCore.Mvc.ViewFeatures.Internal
         {
             // Arrange
             var expected = "<div class=\"HtmlEncode[[display-label]]\">HtmlEncode[[Property1]]</div>" + Environment.NewLine +
-                "<div class=\"HtmlEncode[[display-field]]\"></div>"+ Environment.NewLine +
-                "<div class=\"HtmlEncode[[display-label]]\">HtmlEncode[[Property3]]</div>"+ Environment.NewLine +
-                "<div class=\"HtmlEncode[[display-field]]\"></div>"+ Environment.NewLine;
+                "<div class=\"HtmlEncode[[display-field]]\"></div>" + Environment.NewLine +
+                "<div class=\"HtmlEncode[[display-label]]\">HtmlEncode[[Property3]]</div>" + Environment.NewLine +
+                "<div class=\"HtmlEncode[[display-field]]\"></div>" + Environment.NewLine;
 
             var model = new DefaultTemplatesUtilities.ObjectWithScaffoldColumn();
             var viewEngine = new Mock<ICompositeViewEngine>(MockBehavior.Strict);
@@ -370,10 +370,8 @@ namespace Microsoft.AspNetCore.Mvc.ViewFeatures.Internal
             helper.ViewData["Property1"] = "ViewData string";
 
             // Act and Assert
-            var ex = ExceptionAssert.ThrowsArgument(
-                () => helper.DisplayFor(m => m.Property1),
-                null,
-                expectedMessage);
+            var ex = Assert.Throws<ArgumentException>(() => helper.DisplayFor(m => m.Property1));
+            Assert.Equal(expectedMessage, ex.Message);
         }
 
         [Fact]

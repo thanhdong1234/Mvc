@@ -1,5 +1,6 @@
 // Copyright (c) .NET Foundation. All rights reserved.
 // Licensed under the Apache License, Version 2.0. See License.txt in the project root for license information.
+
 #if NET451
 using System;
 using System.Collections.Generic;
@@ -299,7 +300,7 @@ namespace Microsoft.AspNetCore.Mvc.Formatters.Xml
             Assert.True(context.HttpContext.Request.Body.CanRead);
         }
 
-        [ReplaceCulture("en-US", "en-US")]
+        [ReplaceCulture]
         [Fact]
         public async Task ReadAsync_FallsbackToUTF8_WhenCharSet_NotInContentType()
         {
@@ -326,7 +327,7 @@ namespace Microsoft.AspNetCore.Mvc.Formatters.Xml
         }
 
         [Fact]
-        [ReplaceCulture("en-US", "en-US")]
+        [ReplaceCulture]
         public async Task ReadAsync_UsesContentTypeCharSet_ToReadStream()
         {
             // Arrange

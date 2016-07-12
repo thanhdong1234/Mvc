@@ -3,10 +3,9 @@
 
 using System;
 using Microsoft.AspNetCore.Mvc.TestCommon;
-using Microsoft.Extensions.Primitives;
+using Microsoft.AspNetCore.Testing;
 using Microsoft.Net.Http.Headers;
 using Xunit;
-using Microsoft.AspNetCore.Testing;
 
 namespace Microsoft.AspNetCore.Mvc.Formatters
 {
@@ -49,7 +48,7 @@ namespace Microsoft.AspNetCore.Mvc.Formatters
             // Arrange
             var options = new FormatterMappings();
             var format = ".";
-            var expected = $@"The format provided is invalid '{format}'. A format must be a non-empty file-" +
+            var expected = $"The format provided is invalid '{format}'. A format must be a non-empty file-" +
                 "extension, optionally prefixed with a '.' character.";
 
             // Act and assert
@@ -57,7 +56,7 @@ namespace Microsoft.AspNetCore.Mvc.Formatters
                 () => options.SetMediaTypeMappingForFormat(
                     format,
                     MediaTypeHeaderValue.Parse("application/xml")),
-                null,
+                "format",
                 expected);
         }
 
@@ -92,7 +91,7 @@ namespace Microsoft.AspNetCore.Mvc.Formatters
                 () => options.SetMediaTypeMappingForFormat(
                     "star",
                     MediaTypeHeaderValue.Parse(format)),
-                null,
+                "contentType",
                 expected);
         }
 

@@ -2,10 +2,10 @@
 // Licensed under the Apache License, Version 2.0. See License.txt in the project root for license information.
 
 using System;
-using System.Linq;
 using System.Collections.Generic;
-using Xunit;
+using System.Linq;
 using Microsoft.AspNetCore.Testing;
+using Xunit;
 
 namespace Microsoft.AspNetCore.Mvc.Formatters.Xml.Internal
 {
@@ -84,7 +84,7 @@ namespace Microsoft.AspNetCore.Mvc.Formatters.Xml.Internal
             var expectedMessage = "The type must be an interface and must be or derive from 'IEnumerable`1'.";
 
             // Act and Assert
-            var ex = ExceptionAssert.ThrowsArgument(() => new EnumerableWrapperProvider(
+            ExceptionAssert.ThrowsArgument(() => new EnumerableWrapperProvider(
                 declaredType,
                 elementWrapperProvider: null),
                 "sourceEnumerableOfT",

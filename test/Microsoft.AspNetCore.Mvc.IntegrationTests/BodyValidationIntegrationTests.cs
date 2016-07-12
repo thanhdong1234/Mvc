@@ -10,9 +10,7 @@ using System.Text;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc.Abstractions;
 using Microsoft.AspNetCore.Mvc.ModelBinding;
-using Microsoft.AspNetCore.Testing;
 using Xunit;
-using Microsoft.AspNetCore.Mvc.TestCommon;
 
 namespace Microsoft.AspNetCore.Mvc.IntegrationTests
 {
@@ -94,7 +92,7 @@ namespace Microsoft.AspNetCore.Mvc.IntegrationTests
             var products = Assert.IsAssignableFrom<IEnumerable<ProductViewModel>>(result.Model);
             Assert.Equal(2, products.Count());
         }
-        
+
         [Fact]
         public async Task ModelMetadataTypeAttribute_InvalidPropertiesAndSubPropertiesOnBaseClass_HasModelStateErrors()
         {
@@ -143,7 +141,7 @@ namespace Microsoft.AspNetCore.Mvc.IntegrationTests
             Assert.Equal(detail2Required, modelStateErrors["ProductDetails.Detail2"]);
             Assert.Equal(detail3Required, modelStateErrors["ProductDetails.Detail3"]);
         }
-        
+
         [Fact]
         public async Task ModelMetadataTypeAttribute_InvalidComplexTypePropertyOnBaseClass_HasModelStateErrors()
         {
@@ -259,7 +257,7 @@ namespace Microsoft.AspNetCore.Mvc.IntegrationTests
             Assert.NotNull(boundPerson);
             Assert.True(modelState.IsValid);
         }
-        
+
         [Fact]
         public async Task ModelMetadataTypeAttribute_InvalidPropertiesOnDerivedClass_HasModelStateErrors()
         {
@@ -354,7 +352,7 @@ namespace Microsoft.AspNetCore.Mvc.IntegrationTests
         {
             public string Street { get; set; }
         }
-        
+
         [Fact]
         public async Task FromBodyAndRequiredOnProperty_EmptyBody_AddsModelStateError()
         {

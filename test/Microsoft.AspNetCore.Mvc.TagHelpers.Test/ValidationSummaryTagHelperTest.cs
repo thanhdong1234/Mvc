@@ -311,12 +311,11 @@ namespace Microsoft.AspNetCore.Mvc.TagHelpers
 
             var validationSummaryTagHelper = new ValidationSummaryTagHelper(generator);
             var validationTypeName = typeof(ValidationSummary).FullName;
-            var expectedMessage =
-                $@"The value of argument 'value' ({validationSummary}) is invalid for Enum type '{validationTypeName}'.";
+            var expectedMessage = $"The value of argument 'value' ({validationSummary}) is invalid for Enum type '{validationTypeName}'.";
 
             // Act & Assert
-            var ex = ExceptionAssert.ThrowsArgument(                
-                () => { validationSummaryTagHelper.ValidationSummary = validationSummary; },
+            ExceptionAssert.ThrowsArgument(
+                () => validationSummaryTagHelper.ValidationSummary = validationSummary,
                 "value",
                 expectedMessage);
         }

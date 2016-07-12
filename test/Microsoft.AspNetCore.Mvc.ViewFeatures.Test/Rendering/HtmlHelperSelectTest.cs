@@ -379,7 +379,7 @@ namespace Microsoft.AspNetCore.Mvc.Rendering
             var helper = DefaultTemplatesUtilities.GetHtmlHelper();
 
             // Act & Assert
-            var ex = ExceptionAssert.ThrowsArgument(                
+            ExceptionAssert.ThrowsArgument(
                 () => helper.DropDownList(null, selectList: null, optionLabel: null, htmlAttributes: null),
                 "expression",
                 expected);

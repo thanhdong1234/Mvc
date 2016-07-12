@@ -9,16 +9,15 @@ using System.Globalization;
 using System.Linq.Expressions;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Http;
-using Microsoft.AspNetCore.Mvc.Core;
 using Microsoft.AspNetCore.Mvc.DataAnnotations;
 using Microsoft.AspNetCore.Mvc.DataAnnotations.Internal;
 using Microsoft.AspNetCore.Mvc.Internal;
 using Microsoft.AspNetCore.Mvc.ModelBinding.Binders;
 using Microsoft.AspNetCore.Mvc.ModelBinding.Internal;
 using Microsoft.AspNetCore.Mvc.ModelBinding.Validation;
+using Microsoft.AspNetCore.Testing;
 using Moq;
 using Xunit;
-using Microsoft.AspNetCore.Testing;
 
 namespace Microsoft.AspNetCore.Mvc.ModelBinding
 {
@@ -51,7 +50,6 @@ namespace Microsoft.AspNetCore.Mvc.ModelBinding
         public async Task TryUpdateModel_ReturnsFalse_IfModelValidationFails()
         {
             // Arrange
-            var expectedMessage = new RequiredAttribute().FormatErrorMessage("MyProperty");
             var binderProviders = new IModelBinderProvider[]
             {
                 new SimpleTypeModelBinderProvider(),
@@ -87,7 +85,7 @@ namespace Microsoft.AspNetCore.Mvc.ModelBinding
             // Assert
             Assert.False(result);
             var error = Assert.Single(modelState["MyProperty"].Errors);
-            Assert.Equal(expectedMessage, error.ErrorMessage);
+            Assert.Equal(ValidationAttributeUtil.GetRequiredErrorMessage("MyProperty"), error.ErrorMessage);
         }
 
         [Fact]

@@ -1,8 +1,6 @@
 // Copyright (c) .NET Foundation. All rights reserved.
 // Licensed under the Apache License, Version 2.0. See License.txt in the project root for license information.
 
-using Microsoft.AspNetCore.Mvc.ModelBinding;
-using Microsoft.AspNetCore.Mvc.TestCommon;
 using System;
 using System.Collections.Generic;
 using System.Net;
@@ -100,7 +98,7 @@ namespace Microsoft.AspNetCore.Mvc.FunctionalTests
 #else
                 // Mono issue - https://github.com/aspnet/External/issues/19
                 Assert.Equal(
-                    PlatformNormalizer.NormalizeContent(expectedContent.Trim()),
+                    expectedContent.Trim(),
                     responseContent,
                     ignoreLineEndingDifferences: true);
 #endif
@@ -116,7 +114,7 @@ namespace Microsoft.AspNetCore.Mvc.FunctionalTests
                 expectedContent = string.Format(expectedContent, forgeryToken);
                 // Mono issue - https://github.com/aspnet/External/issues/19
                 Assert.Equal(
-                    PlatformNormalizer.NormalizeContent(expectedContent.Trim()),
+                    expectedContent.Trim(),
                     responseContent,
                     ignoreLineEndingDifferences: true);
 #endif
@@ -168,7 +166,7 @@ namespace Microsoft.AspNetCore.Mvc.FunctionalTests
 #else
                 // Mono issue - https://github.com/aspnet/External/issues/19
                 Assert.Equal(
-                    PlatformNormalizer.NormalizeContent(expectedContent.Trim()),
+                    expectedContent.Trim(),
                     responseContent,
                     ignoreLineEndingDifferences: true);
 #endif
@@ -184,7 +182,7 @@ namespace Microsoft.AspNetCore.Mvc.FunctionalTests
                 expectedContent = string.Format(expectedContent, forgeryToken);
                 // Mono issue - https://github.com/aspnet/External/issues/19
                 Assert.Equal(
-                    PlatformNormalizer.NormalizeContent(expectedContent.Trim()),
+                    expectedContent.Trim(),
                     responseContent,
                     ignoreLineEndingDifferences: true);
 #endif
@@ -258,7 +256,7 @@ namespace Microsoft.AspNetCore.Mvc.FunctionalTests
             expectedContent = string.Format(expectedContent, forgeryToken);
             // Mono issue - https://github.com/aspnet/External/issues/19
             Assert.Equal(
-                PlatformNormalizer.NormalizeContent(expectedContent.Trim()),
+                expectedContent.Trim(),
                 responseContent,
                 ignoreLineEndingDifferences: true);
 #endif
@@ -504,12 +502,12 @@ Products: Music Systems, Televisions (3)";
         public async Task EditorTemplateWithNoModel_RendersWithCorrectMetadata()
         {
             // Arrange
-            var expected = PlatformNormalizer.NormalizeContent(
+            var expected =
                 "<label class=\"control-label col-md-2\" for=\"Name\">ItemName</label>" + Environment.NewLine +
                 "<input id=\"Name\" name=\"Name\" type=\"text\" value=\"\" />" + Environment.NewLine + Environment.NewLine +
                 "<label class=\"control-label col-md-2\" for=\"Id\">ItemNo</label>" + Environment.NewLine +
-                $"<input data-val=\"true\" data-val-required=\"The ItemNo field is required.\" id=\"Id\" name=\"Id\" type=\"text\" value=\"\" />" +
-                Environment.NewLine + Environment.NewLine);
+                "<input data-val=\"true\" data-val-required=\"The ItemNo field is required.\" id=\"Id\" name=\"Id\" type=\"text\" value=\"\" />" +
+                Environment.NewLine + Environment.NewLine;
 
             // Act
             var response = await Client.GetStringAsync("http://localhost/HtmlGeneration_Home/ItemUsingSharedEditorTemplate");

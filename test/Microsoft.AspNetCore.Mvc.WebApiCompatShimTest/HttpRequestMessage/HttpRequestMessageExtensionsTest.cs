@@ -23,14 +23,7 @@ namespace System.Net.Http
             var ex = Assert.Throws<FormatException>(
                 () => request.CreateResponse(HttpStatusCode.OK, CreateValue(), "foo/bar; param=value"));
 
-            if (TestPlatformHelper.IsMono)
-            {
-                Assert.Equal("Invalid format.", ex.Message);
-            }
-            else
-            {
-                Assert.Contains("foo/bar; param=value", ex.Message);
-            }
+            Assert.Contains("foo/bar; param=value", ex.Message);
         }
 
         [Fact]

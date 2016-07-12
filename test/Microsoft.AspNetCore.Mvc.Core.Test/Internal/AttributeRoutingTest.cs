@@ -29,6 +29,7 @@ namespace Microsoft.AspNetCore.Mvc.Internal
     public class AttributeRoutingTest
     {
         [Fact]
+        [ReplaceCulture]
         public async Task AttributeRouting_SyntaxErrorInTemplate()
         {
             // Arrange
@@ -42,19 +43,18 @@ namespace Microsoft.AspNetCore.Mvc.Internal
                 "Error: The route parameter name 'a/dkfk' is invalid. Route parameter names must be non-empty and " +
                 "cannot contain these characters: '{', '}', '/'. The '?' character marks a parameter as optional, " +
                 "and can occur only at the end of the parameter. The '*' character marks a parameter as catch-all, " +
-                "and can occur only at the start of the parameter.";
+                "and can occur only at the start of the parameter." + Environment.NewLine +
+                "Parameter name: routeTemplate";
 
             var services = CreateServices(action);
 
             var route = AttributeRouting.CreateAttributeMegaRoute(services);
+            var routeContext = new RouteContext(new DefaultHttpContext());
 
             // Act & Assert
-            var ex = await Assert.ThrowsAsync<InvalidOperationException>(async () =>
-                {
-                    await route.RouteAsync(new RouteContext(new DefaultHttpContext()));
-                });
+            var ex = await Assert.ThrowsAsync<InvalidOperationException>(() => route.RouteAsync(routeContext));
 
-            Assert.Contains(expectedMessage, ex.Message);
+            Assert.Equal(expectedMessage, ex.Message);
         }
 
         [Fact]

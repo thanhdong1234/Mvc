@@ -413,9 +413,9 @@ namespace Microsoft.AspNetCore.Mvc.Rendering
             {
                 { "class", "some-class"}
             };
-            var expected = new ArgumentException("The name of an HTML field cannot be null or empty. Instead use methods " +
+            var expected = "The name of an HTML field cannot be null or empty. Instead use methods " +
                 "Microsoft.AspNetCore.Mvc.Rendering.IHtmlHelper.Editor or Microsoft.AspNetCore.Mvc.Rendering." +
-                "IHtmlHelper`1.EditorFor with a non-empty htmlFieldName argument value.", "expression").Message;
+                "IHtmlHelper`1.EditorFor with a non-empty htmlFieldName argument value.";
 
             // Act and Assert
             ExceptionAssert.ThrowsArgument(
@@ -449,10 +449,9 @@ namespace Microsoft.AspNetCore.Mvc.Rendering
         {
             // Arrange
             var requiredMessage = new RequiredAttribute().FormatErrorMessage("Property2");
-            // Mono issue - https://github.com/aspnet/External/issues/19
-            var expected = PlatformNormalizer.NormalizeContent(
+            var expected =
                 $@"<input data-val=""HtmlEncode[[true]]"" data-val-required=""HtmlEncode[[{requiredMessage}]]"" " +
-                @"id=""HtmlEncode[[Property2]]"" name=""HtmlEncode[[Property2]]"" type=""HtmlEncode[[hidden]]"" value="""" />");
+                @"id=""HtmlEncode[[Property2]]"" name=""HtmlEncode[[Property2]]"" type=""HtmlEncode[[hidden]]"" value="""" />";
             var helper = DefaultTemplatesUtilities.GetHtmlHelper(GetViewDataWithModelStateAndModelAndViewDataValues());
 
             // Act
@@ -713,12 +712,10 @@ namespace Microsoft.AspNetCore.Mvc.Rendering
         public void HiddenFor_GeneratesUnobtrusiveValidationAttributes()
         {
             // Arrange
-            var attritbute = new RequiredAttribute();
-            var requiredMessage = attritbute.FormatErrorMessage("Property2");
-            // Mono issue - https://github.com/aspnet/External/issues/19
-            var expected = PlatformNormalizer.NormalizeContent(
+            var requiredMessage = ValidationAttributeUtil.GetRequiredErrorMessage("Property2");
+            var expected =
                 $@"<input data-val=""HtmlEncode[[true]]"" data-val-required=""HtmlEncode[[{requiredMessage}]]"" " +
-                @"id=""HtmlEncode[[Property2]]"" name=""HtmlEncode[[Property2]]"" type=""HtmlEncode[[hidden]]"" value="""" />");
+                @"id=""HtmlEncode[[Property2]]"" name=""HtmlEncode[[Property2]]"" type=""HtmlEncode[[hidden]]"" value="""" />";
             var helper = DefaultTemplatesUtilities.GetHtmlHelper(GetViewDataWithErrors());
 
             // Act

@@ -13,12 +13,10 @@ using System.Threading.Tasks;
 using Microsoft.AspNetCore.Testing.xunit;
 using XmlFormattersWebSite;
 using Xunit;
-using Microsoft.AspNetCore.Mvc.TestCommon;
-using Microsoft.AspNetCore.Mvc.ModelBinding;
 
 namespace Microsoft.AspNetCore.Mvc.FunctionalTests
 {
-    public class XmlDataContractSerializerInputFormatterTest : IClassFixture<MvcTestFixture<XmlFormattersWebSite.Startup>>
+    public class XmlDataContractSerializerInputFormatterTest : IClassFixture<MvcTestFixture<Startup>>
     {
         private readonly string errorMessageFormat = string.Format(
             "{{1}}:{0} does not recognize '{1}', so instead use '{2}' with '{3}' set to '{4}' for value " +
@@ -29,7 +27,7 @@ namespace Microsoft.AspNetCore.Mvc.FunctionalTests
             nameof(DataMemberAttribute.IsRequired),
             bool.TrueString);
 
-        public XmlDataContractSerializerInputFormatterTest(MvcTestFixture<XmlFormattersWebSite.Startup> fixture)
+        public XmlDataContractSerializerInputFormatterTest(MvcTestFixture<Startup> fixture)
         {
             Client = fixture.Client;
         }
@@ -102,8 +100,7 @@ namespace Microsoft.AspNetCore.Mvc.FunctionalTests
             request.Headers.Accept.Add(new MediaTypeWithQualityHeaderValue("application/xml-dcs"));
 
             var expectedErrorMessages = new List<string>();
-
-            expectedErrorMessages.Add($"Address:The Address field is required.");
+            expectedErrorMessages.Add("Address:The Address field is required.");
 
             // Act
             var response = await Client.SendAsync(request);

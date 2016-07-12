@@ -10,7 +10,6 @@ using System.Threading.Tasks;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc.Abstractions;
 using Microsoft.AspNetCore.Mvc.ModelBinding;
-using Microsoft.AspNetCore.Testing;
 using Microsoft.Extensions.Primitives;
 using Xunit;
 
@@ -637,7 +636,7 @@ namespace Microsoft.AspNetCore.Mvc.IntegrationTests
             [StringLength(3)]
             public string Street { get; set; }
         }
-        
+
         [Fact]
         public async Task CollectionModelBinder_UsesCustomIndexes_AddsErrorsWithCorrectKeys()
         {
@@ -678,7 +677,7 @@ namespace Microsoft.AspNetCore.Mvc.IntegrationTests
             var error = Assert.Single(entry.Errors);
             Assert.Equal(ValidationAttributeUtil.GetStringLengthErrorMessage(null, 3, "Street"), error.ErrorMessage);
         }
-        
+
         [Theory]
         [InlineData("?[0].Street=LongStreet")]
         [InlineData("?index=low&[low].Street=LongStreet")]

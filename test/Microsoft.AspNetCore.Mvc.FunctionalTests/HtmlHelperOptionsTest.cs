@@ -5,8 +5,6 @@ using System.Net.Http;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Testing;
 using Xunit;
-using Microsoft.AspNetCore.Mvc.TestCommon;
-using Microsoft.AspNetCore.Mvc.ModelBinding;
 
 namespace Microsoft.AspNetCore.Mvc.FunctionalTests
 {
@@ -50,11 +48,12 @@ False";
         }
 
         [Fact]
+        [ReplaceCulture]
         public async Task OverrideAppWideDefaultsInViewAndPartialView()
         {
             // Arrange
             var expected =
-$@"<div class=""validation-summary-errors""><ValidationSummaryInView>MySummary</ValidationSummaryInView>
+@"<div class=""validation-summary-errors""><ValidationSummaryInView>MySummary</ValidationSummaryInView>
 <ul><li style=""display:none""></li>
 </ul></div>
 <ValidationInView class=""field-validation-error"" data-valmsg-for=""Error"" data-valmsg-replace=""true"">An error occurred.</ValidationInView>
@@ -79,7 +78,7 @@ True";
             // Assert
             // Mono issue - https://github.com/aspnet/External/issues/19
             Assert.Equal(
-                PlatformNormalizer.NormalizeContent(expected),
+                expected,
                 body.Trim(),
                 ignoreLineEndingDifferences: true);
         }
